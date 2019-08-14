@@ -1,6 +1,6 @@
 # How to install
 
-1. `git clone project`
+1. `git clone https://github.com/faozimipa/belajargo.git project`
 2. `cd project`
 3. `go get`
 4. `cp .env.example .env`
