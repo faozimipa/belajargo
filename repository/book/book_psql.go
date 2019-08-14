@@ -2,6 +2,7 @@ package bookrepository
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/faozimipa/belajargo/models"
@@ -12,7 +13,11 @@ type BookRepository struct{}
 
 func logFatal(err error) {
 	if err != nil {
-		log.Fatal(err)
+		if err == sql.ErrNoRows {
+			fmt.Println("Zero rows found")
+		} else {
+			log.Fatal(err)
+		}
 	}
 }
 
@@ -35,7 +40,6 @@ func (b BookRepository) GetBooks(db *sql.DB, book models.Book, books []models.Bo
 func (b BookRepository) GetBook(db *sql.DB, book models.Book, id int) models.Book {
 	rows := db.QueryRow("select * from books where id=$1", id)
 	err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Year)
-
 	logFatal(err)
 
 	return book
@@ -67,7 +71,7 @@ func (b BookRepository) UpdateBook(db *sql.DB, book models.Book) int64 {
 //RemoveBook delete single book
 func (b BookRepository) RemoveBook(db *sql.DB, id int) int64 {
 
-	result, err := db.Exec("delete from books whereid=$1", id)
+	result, err := db.Exec("delete from books where id=$1", id)
 	logFatal(err)
 
 	rowsDeleted, err := result.RowsAffected()
