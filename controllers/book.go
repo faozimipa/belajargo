@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	u "github.com/faozimipa/belajargo/utils"
 	"github.com/faozimipa/belajargo/models"
 	bookrepository "github.com/faozimipa/belajargo/repository/book"
 	"github.com/gorilla/mux"
@@ -24,8 +25,11 @@ func (c Controller) GetBooks(db *sql.DB) http.HandlerFunc {
 		var book models.Book
 		var books []models.Book
 		bookRepo := bookrepository.BookRepository{}
-		books = bookRepo.GetBooks(db, book, books)
-		json.NewEncoder(w).Encode(books)
+		// books = bookRepo.GetBooks(db, book, books)
+		data := bookRepo.GetBooks(db, book, books)
+		resp := u.Message(true, "success")
+		resp["data"] = data
+		u.Respond(w, resp)
 	}
 }
 
